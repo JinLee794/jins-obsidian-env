@@ -1,0 +1,12 @@
+{
+  "cssTheme": "Border",
+  "enabledCssSnippets": [
+    "dashboard",
+    "dashboard-v2-settings",
+    "MCL Gallery Cards",
+    "MCL Multi Column",
+    "MCL Wide Views"
+  ],
+  "theme": "moonstone",
+  "translucency": false
+}

@@ -1,0 +1,79 @@
+{
+  "collapse-filter": false,
+  "search": "",
+  "showTags": true,
+  "showAttachments": false,
+  "hideUnresolved": false,
+  "showOrphans": true,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "path:Customers  ",
+      "color": {
+        "a": 1,
+        "rgb": 14701138
+      }
+    },
+    {
+      "query": "path:Meetings  ",
+      "color": {
+        "a": 1,
+        "rgb": 14725458
+      }
+    },
+    {
+      "query": "path:Projects  ",
+      "color": {
+        "a": 1,
+        "rgb": 11657298
+      }
+    },
+    {
+      "query": "path:Daily  ",
+      "color": {
+        "a": 1,
+        "rgb": 8147680
+      }
+    },
+    {
+      "query": "tag:#agent-log  ",
+      "color": {
+        "a": 1,
+        "rgb": 5431473
+      }
+    },
+    {
+      "query": "tag:#milestone",
+      "color": {
+        "a": 1,
+        "rgb": 5419488
+      }
+    },
+    {
+      "query": "tag:#opportunity",
+      "color": {
+        "a": 1,
+        "rgb": 5395168
+      }
+    },
+    {
+      "query": "[\"company\":\"Microsoft\"]",
+      "color": {
+        "a": 1,
+        "rgb": 4336
+      }
+    }
+  ],
+  "collapse-display": false,
+  "showArrow": true,
+  "textFadeMultiplier": -1.2,
+  "nodeSizeMultiplier": 1.13591725392135,
+  "lineSizeMultiplier": 0.947391452602864,
+  "collapse-forces": false,
+  "centerStrength": 0.300173611111111,
+  "repelStrength": 6.47569444444444,
+  "linkStrength": 1,
+  "linkDistance": 30,
+  "scale": 0.8798029472156664,
+  "close": true
+}

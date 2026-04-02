@@ -32,6 +32,7 @@ if (Test-Path $ObsidianDir -PathType Container) {
     $BackupPath = Join-Path $VaultPath ".obsidian-backup-$Timestamp"
     Write-Host "Existing .obsidian found. Backing up to: $BackupPath" -ForegroundColor Yellow
     Copy-Item $ObsidianDir -Destination $BackupPath -Recurse -Force
+    Remove-Item $ObsidianDir -Recurse -Force
 }
 
 New-Item -Path $ObsidianDir -ItemType Directory -Force | Out-Null
@@ -48,13 +49,13 @@ Get-ChildItem -Path $BackupDir -Force | ForEach-Object {
 }
 
 # Summary
-$jsonCount    = (Get-ChildItem -Path $ObsidianDir -Filter '*.json' -File -ErrorAction SilentlyContinue).Count
+$jsonCount    = @(Get-ChildItem -Path $ObsidianDir -Filter '*.json' -File -ErrorAction SilentlyContinue).Count
 $pluginDir    = Join-Path $ObsidianDir 'plugins'
-$pluginCount  = if (Test-Path $pluginDir) { (Get-ChildItem -Path $pluginDir -Directory -ErrorAction SilentlyContinue).Count } else { 0 }
+$pluginCount  = if (Test-Path $pluginDir) { @(Get-ChildItem -Path $pluginDir -Directory -ErrorAction SilentlyContinue).Count } else { 0 }
 $themeDir     = Join-Path $ObsidianDir 'themes'
-$themeCount   = if (Test-Path $themeDir) { (Get-ChildItem -Path $themeDir -Directory -ErrorAction SilentlyContinue).Count } else { 0 }
+$themeCount   = if (Test-Path $themeDir) { @(Get-ChildItem -Path $themeDir -Directory -ErrorAction SilentlyContinue).Count } else { 0 }
 $snippetDir   = Join-Path $ObsidianDir 'snippets'
-$snippetCount = if (Test-Path $snippetDir) { (Get-ChildItem -Path $snippetDir -Filter '*.css' -File -ErrorAction SilentlyContinue).Count } else { 0 }
+$snippetCount = if (Test-Path $snippetDir) { @(Get-ChildItem -Path $snippetDir -Filter '*.css' -File -ErrorAction SilentlyContinue).Count } else { 0 }
 
 Write-Host ""
 Write-Host "Imported successfully!" -ForegroundColor Green

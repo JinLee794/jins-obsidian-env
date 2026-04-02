@@ -75,9 +75,10 @@ fi
 
 # Remove all plugin data.json files — these contain vault-specific state,
 # cached file paths, tokens, and other data that shouldn't be committed.
-# Plugin settings will reset to defaults on import.
-DATA_COUNT=$(find "$BACKUP_DIR/plugins" -name 'data.json' 2>/dev/null | wc -l | tr -d ' ')
-find "$BACKUP_DIR/plugins" -name 'data.json' -delete 2>/dev/null
+# Exception: dataview/data.json is kept because enableDataviewJs defaults
+# to false and the dashboards require it to be true.
+DATA_COUNT=$(find "$BACKUP_DIR/plugins" -name 'data.json' -not -path '*/dataview/data.json' 2>/dev/null | wc -l | tr -d ' ')
+find "$BACKUP_DIR/plugins" -name 'data.json' -not -path '*/dataview/data.json' -delete 2>/dev/null
 # Also remove other known state files
 find "$BACKUP_DIR/plugins" -name 'cursor-positions.json' -delete 2>/dev/null
 find "$BACKUP_DIR/plugins" -name 'brat-migrations.json' -delete 2>/dev/null

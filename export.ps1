@@ -86,9 +86,11 @@ if ($binCount -gt 0) {
 
 # Remove all plugin data.json files — these contain vault-specific state,
 # cached file paths, tokens, and other data that shouldn't be committed.
-# Plugin settings will reset to defaults on import.
+# Exception: dataview/data.json is kept because enableDataviewJs defaults
+# to false and the dashboards require it to be true.
 $pluginsDir = Join-Path $BackupDir 'plugins'
-$dataFiles = Get-ChildItem -Path $pluginsDir -Filter 'data.json' -Recurse -ErrorAction SilentlyContinue
+$dataFiles = Get-ChildItem -Path $pluginsDir -Filter 'data.json' -Recurse -ErrorAction SilentlyContinue |
+    Where-Object { $_.Directory.Name -ne 'dataview' }
 $dataCount = ($dataFiles | Measure-Object).Count
 $dataFiles | Remove-Item -Force
 # Also remove cursor-positions and other known state files

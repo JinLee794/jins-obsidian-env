@@ -2,14 +2,18 @@
 tags:
   - dashboard
 sticker: lucide//calendar
-selected_date: 2026-04-01
+selected_date: 2026-04-02
+cssclasses:
+  - wide-page
 ---
 
 # 📅 Day View
 
 > [!abstract]- 📡 Local Data · Last synced from MSX / CRM
 > Everything on this dashboard is rendered from **local vault files**. To refresh, ask **@mcaps-iq** in GitHub Copilot Chat or run the **Sidekick** sync command.
-
+> 
+> If you have **Sidekick** enabled, try prompting it "help me prep for my day"
+ 
 ```meta-bind
 INPUT[date:selected_date]
 ```

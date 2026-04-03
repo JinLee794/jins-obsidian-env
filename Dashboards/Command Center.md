@@ -565,9 +565,10 @@ const renderCal = () => {
   const btnBar = calContainer.createEl('div', { attr: { style: 'display:flex;gap:6px;flex-wrap:wrap;padding:4px 0 2px 0;align-items:center;' } });
   btnBar.createEl('span', { text: 'Quick:', attr: { style: 'font-size:0.7em;opacity:0.4;font-weight:600;' } });
   const { fy: curFY, q: curQ } = getFQ(now.getMonth(), now.getFullYear());
-  for (let i = 0; i < 5; i++) {
-    let qq = curQ + i, fy = curFY; while (qq > 4) { qq -= 4; fy++; }
-    const label = `FY${fy} Q${qq}`; const range = getQRange(fy, qq); const qc = qColors[qq];
+  for (let i = -1; i < 5; i++) {
+    let qq = curQ + i, fy = curFY; while (qq > 4) { qq -= 4; fy++; } while (qq < 1) { qq += 4; fy--; }
+    const hint = i === -1 ? ' (Prev)' : i === 0 ? ' (Now)' : i === 1 ? ' (Next)' : '';
+    const label = `FY${fy} Q${qq}${hint}`; const range = getQRange(fy, qq); const qc = qColors[qq];
     const isActive = rangeStart && rangeEnd && Math.abs((rangeStart < rangeEnd ? rangeStart : rangeEnd).getTime() - range.start.getTime()) < 86400000 && Math.abs((rangeStart < rangeEnd ? rangeEnd : rangeStart).getTime() - range.end.getTime()) < 86400000;
     const btn = btnBar.createEl('span', { text: label, attr: { style: `font-size:0.72em;font-weight:600;padding:3px 10px;border-radius:12px;cursor:pointer;background:${isActive ? qc : qc + '22'};color:${isActive ? '#fff' : qc};border:1px solid ${qc}44;transition:all 0.15s;user-select:none;` } });
     btn.addEventListener('click', (e) => { e.stopPropagation(); rangeStart = range.start; rangeEnd = range.end; clicking = false; viewStartMonth = range.start.getMonth(); viewStartYear = range.start.getFullYear(); dispatchRange(); renderCal(); });
@@ -590,8 +591,8 @@ const safeFmt = (d, fmt) => { if (!d) return ''; try { const dt = typeof d === '
 const fmtK = (v) => v >= 1000000 ? `$${(v/1000000).toFixed(1)}M` : v >= 1000 ? `$${(v/1000).toFixed(0)}K` : `$${v}`;
 const getACR = (o) => Number(o.recurringACR) || Number(o.acr) || 0;
 
-const allMilestones = dv.pages('#milestone');
-const allOpps = dv.pages('#opportunity').where(o => o.file.folder.includes('opportunities'));
+const allMilestones = dv.pages('#milestone').where(m => m.status !== 'Completed' && m.status !== 'Cancelled' && m.status !== 'Closed as Incomplete');
+const allOpps = dv.pages('#opportunity').where(o => o.file.folder.includes('opportunities') && o.status !== 'Completed' && o.status !== 'Cancelled' && o.status !== 'Won' && o.status !== 'Lost');
 
 // Collect customer names
 const custSet = new Set();
@@ -608,7 +609,11 @@ const custSelect = filterWrap.createEl('select', { attr: { style: selStyle } });
 custSelect.createEl('option', { text: 'All Customers', attr: { value: '' } });
 for (const c of [...custSet].sort()) custSelect.createEl('option', { text: c, attr: { value: c } });
 
-filterWrap.createEl('span', { text: 'Status:', attr: { style: 'font-size:0.75em;font-weight:600;opacity:0.5;margin-left:8px;' } });
+filterWrap.createEl('span', { text: 'Opp Stage:', attr: { style: 'font-size:0.75em;font-weight:600;opacity:0.5;margin-left:8px;' } });
+const oppStageSelect = filterWrap.createEl('select', { attr: { style: selStyle } });
+for (const [t, v] of [['All Stages',''],['Listen & Consult','Listen & Consult'],['Inspire & Design','Inspire & Design'],['Empower & Achieve','Empower & Achieve'],['Manage & Optimize','Manage & Optimize'],['Realize Value','Realize Value'],['Past Est Close','past-close']]) oppStageSelect.createEl('option', { text: t, attr: { value: v } });
+
+filterWrap.createEl('span', { text: 'MS Status:', attr: { style: 'font-size:0.75em;font-weight:600;opacity:0.5;margin-left:8px;' } });
 const statusSelect = filterWrap.createEl('select', { attr: { style: selStyle } });
 for (const [t, v] of [['All Statuses',''],['On Track','On Track'],['At Risk','At Risk'],['Blocked','Blocked'],['Overdue Only','overdue']]) statusSelect.createEl('option', { text: t, attr: { value: v } });
 
@@ -618,14 +623,16 @@ fqSelect.createEl('option', { text: 'All Quarters', attr: { value: '' } });
 const getFQ = (date) => { const m = date.getMonth(); const y = date.getFullYear(); const fy = m >= 6 ? y + 1 : y; const q = m >= 6 ? Math.floor((m - 6) / 3) + 1 : Math.floor((m + 6) / 3) + 1; return { fy, q }; };
 const quarters = [];
 const { fy: curFY, q: curQ } = getFQ(new Date());
-for (let i = 0; i < 5; i++) {
+for (let i = -1; i < 5; i++) {
   let q = curQ + i, fy = curFY;
   while (q > 4) { q -= 4; fy++; }
+  while (q < 1) { q += 4; fy--; }
   const qStarts = { 1: [6, 1], 2: [9, 1], 3: [0, 1], 4: [3, 1] };
   const qEnds = { 1: [8, 30], 2: [11, 31], 3: [2, 31], 4: [5, 30] };
   const sy = q <= 2 ? fy - 1 : fy;
   quarters.push({ label: `FY${fy} Q${q}`, start: new Date(sy, qStarts[q][0], qStarts[q][1]), end: new Date(sy, qEnds[q][0], qEnds[q][1]) });
-  fqSelect.createEl('option', { text: `FY${fy} Q${q}`, attr: { value: `${fy}-${q}` } });
+  const hint = i === -1 ? ' (Previous)' : i === 0 ? ' (Current)' : i === 1 ? ' (Next)' : '';
+  fqSelect.createEl('option', { text: `FY${fy} Q${q}${hint}`, attr: { value: `${fy}-${q}` } });
 }
 
 const countDisplay = filterWrap.createEl('span', { attr: { style: 'font-size:0.75em;opacity:0.45;margin-left:auto;' } });
@@ -635,12 +642,22 @@ const timelineWrap = this.container.createEl('div');
 
 const renderMonthHeaders = (parent, rangeStart, rangeEnd, rangeDays, leftMargin) => {
   const hb = parent.createEl('div', { attr: { style: `display:flex;margin-left:${leftMargin};height:24px;border-bottom:1px solid var(--background-modifier-border);margin-bottom:8px;position:relative;` } });
-  let d = new Date(rangeStart.ts || rangeStart);
-  const endTs = rangeEnd.ts || rangeEnd;
+  const startD = new Date(rangeStart.ts || rangeStart);
+  const endD = new Date(rangeEnd.ts || rangeEnd);
+  const step = rangeDays > 730 ? 6 : rangeDays > 365 ? 3 : rangeDays > 180 ? 2 : 1;
+  let d = new Date(startD);
+  let monthIdx = 0;
   const months = new Set();
-  while (d <= endTs) {
+  while (d <= endD) {
     const key = `${d.getFullYear()}-${d.getMonth()}`;
-    if (!months.has(key)) { months.add(key); const off = Math.round((d - (rangeStart.ts ? new Date(rangeStart.ts) : new Date(rangeStart))) / (1000*60*60*24)); hb.createEl('span', { text: d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }), attr: { style: `position:absolute;left:${(off/rangeDays)*100}%;font-size:0.7em;opacity:0.5;top:4px;` } }); }
+    if (!months.has(key)) {
+      months.add(key);
+      if (monthIdx % step === 0) {
+        const off = Math.round((d - startD) / 86400000);
+        hb.createEl('span', { text: d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }), attr: { style: `position:absolute;left:${(off/rangeDays)*100}%;font-size:0.7em;opacity:0.5;top:4px;white-space:nowrap;` } });
+      }
+      monthIdx++;
+    }
     d.setDate(d.getDate() + 7);
   }
 };
@@ -669,20 +686,37 @@ const renderTimelines = () => {
   timelineWrap.empty();
   const cf = custSelect.value;
   const sf = statusSelect.value;
+  const osf = oppStageSelect.value;
   const fqf = fqSelect.value;
   const calRange = window._pipelineDateRange;
 
   // ═══ OPPORTUNITY TIMELINE ═══
-  const oppRangeStart = today - dv.duration('14 days');
-  const oppRangeEnd = today + dv.duration('120 days');
-  const oppRangeDays = Math.round((oppRangeEnd - oppRangeStart) / (1000*60*60*24));
-
+  const todayMs = today.ts || Date.now();
+  let oppRangeStart, oppRangeEnd;
+  if (calRange) {
+    oppRangeStart = new Date(calRange.start.getTime() - 7 * 86400000);
+    oppRangeEnd = new Date(calRange.end.getTime() + 7 * 86400000);
+  } else if (fqf) {
+    const [fy, q] = fqf.split('-').map(Number);
+    const fq = quarters.find(f => f.label === `FY${fy} Q${q}`);
+    if (fq) { oppRangeStart = new Date(fq.start.getTime() - 7 * 86400000); oppRangeEnd = new Date(fq.end.getTime() + 7 * 86400000); }
+    else { oppRangeStart = new Date(todayMs - 14 * 86400000); oppRangeEnd = new Date(todayMs + 120 * 86400000); }
+  } else {
+    oppRangeStart = new Date(todayMs - 14 * 86400000);
+    oppRangeEnd = new Date(todayMs + 120 * 86400000);
+  }
   let filteredOpps = allOpps.where(o => safeDate(o.estClose) != null);
   if (cf) filteredOpps = filteredOpps.where(o => getCustFromFolder(o.file.folder) === cf);
+  if (osf === 'past-close') filteredOpps = filteredOpps.where(o => { const cd = safeDate(o.estClose); return cd && cd < today; });
+  else if (osf) filteredOpps = filteredOpps.where(o => o.stage === osf);
   if (fqf) filteredOpps = filteredOpps.where(o => matchesQuarter(safeDate(o.estClose), fqf));
   if (calRange) filteredOpps = filteredOpps.where(o => { const cd = safeDate(o.estClose); if (!cd) return false; const ts = cd.ts || new Date(cd).getTime(); return ts >= calRange.start.getTime() && ts <= calRange.end.getTime(); });
   filteredOpps = filteredOpps.sort(o => o.estClose, 'asc');
   const undatedOpps = allOpps.where(o => safeDate(o.estClose) == null && (!cf || getCustFromFolder(o.file.folder) === cf));
+
+  // Extend axis to encompass all filtered items (past-due included)
+  for (const o of filteredOpps) { const cd = safeDate(o.estClose); if (cd) { const ts = cd.ts || new Date(cd).getTime(); if (ts < oppRangeStart.getTime()) oppRangeStart = new Date(ts - 7 * 86400000); if (ts > oppRangeEnd.getTime()) oppRangeEnd = new Date(ts + 7 * 86400000); } }
+  const oppRangeDays = Math.round((oppRangeEnd - oppRangeStart) / 86400000);
 
   const oppByCustomer = {};
   for (const opp of filteredOpps) { const c = getCustFromFolder(opp.file.folder); if (!oppByCustomer[c]) oppByCustomer[c] = []; oppByCustomer[c].push(opp); }
@@ -690,7 +724,8 @@ const renderTimelines = () => {
   const oppHeader = timelineWrap.createEl('h2', { text: `🎯 Opportunity Timeline (${filteredOpps.length} dated · ${undatedOpps.length} undated)`, attr: { style: 'margin-top:0;' } });
   const oppWrap = timelineWrap.createEl('div', { attr: { style: 'overflow-x:auto;margin:8px 0;' } });
   renderMonthHeaders(oppWrap, oppRangeStart, oppRangeEnd, oppRangeDays, '120px');
-  const oppTodayOff = Math.round(14 / oppRangeDays * 100);
+  const oppTodayDays = Math.round((todayMs - oppRangeStart.getTime()) / 86400000);
+  const oppTodayOff = (oppTodayDays >= 0 && oppTodayDays <= oppRangeDays) ? (oppTodayDays / oppRangeDays * 100) : -10;
 
   for (const [cust, oppList] of Object.entries(oppByCustomer).sort((a,b) => a[0].localeCompare(b[0]))) {
     const row = oppWrap.createEl('div', { attr: { style: 'display:flex;align-items:center;margin:3px 0;min-height:28px;' } });
@@ -728,10 +763,19 @@ const renderTimelines = () => {
   }
 
   // ═══ MILESTONE TIMELINE ═══
-  const msRangeStart = today - dv.duration('14 days');
-  const msRangeEnd = today + dv.duration('90 days');
-  const msRangeDays = Math.round((msRangeEnd - msRangeStart) / (1000*60*60*24));
-
+  let msRangeStart, msRangeEnd;
+  if (calRange) {
+    msRangeStart = new Date(calRange.start.getTime() - 7 * 86400000);
+    msRangeEnd = new Date(calRange.end.getTime() + 7 * 86400000);
+  } else if (fqf) {
+    const [fy, q] = fqf.split('-').map(Number);
+    const fq = quarters.find(f => f.label === `FY${fy} Q${q}`);
+    if (fq) { msRangeStart = new Date(fq.start.getTime() - 7 * 86400000); msRangeEnd = new Date(fq.end.getTime() + 7 * 86400000); }
+    else { msRangeStart = new Date(todayMs - 14 * 86400000); msRangeEnd = new Date(todayMs + 90 * 86400000); }
+  } else {
+    msRangeStart = new Date(todayMs - 14 * 86400000);
+    msRangeEnd = new Date(todayMs + 90 * 86400000);
+  }
   let filteredMs = allMilestones.where(m => m.milestonedate);
   if (cf) filteredMs = filteredMs.where(m => getCustFromFolder(m.file.folder) === cf);
   if (sf === 'overdue') filteredMs = filteredMs.where(m => m.milestonedate < today && m.status !== 'Blocked');
@@ -739,6 +783,10 @@ const renderTimelines = () => {
   if (fqf) filteredMs = filteredMs.where(m => matchesQuarter(m.milestonedate, fqf));
   if (calRange) filteredMs = filteredMs.where(m => { const ts = m.milestonedate.ts || new Date(m.milestonedate).getTime(); return ts >= calRange.start.getTime() && ts <= calRange.end.getTime(); });
   filteredMs = filteredMs.sort(m => m.milestonedate, 'asc');
+
+  // Extend axis to encompass all filtered milestones (past-due included)
+  for (const m of filteredMs) { const md = m.milestonedate; if (md) { const ts = md.ts || new Date(md).getTime(); if (ts < msRangeStart.getTime()) msRangeStart = new Date(ts - 7 * 86400000); if (ts > msRangeEnd.getTime()) msRangeEnd = new Date(ts + 7 * 86400000); } }
+  const msRangeDays = Math.round((msRangeEnd - msRangeStart) / 86400000);
 
   countDisplay.textContent = `${filteredOpps.length} opps · ${filteredMs.length} milestones`;
 
@@ -755,7 +803,8 @@ const renderTimelines = () => {
   const msWrap = timelineWrap.createEl('div', { attr: { style: 'overflow-x:auto;margin:8px 0;' } });
   const labelWidth = '200px';
   renderMonthHeaders(msWrap, msRangeStart, msRangeEnd, msRangeDays, labelWidth);
-  const msTodayOff = Math.round(14 / msRangeDays * 100);
+  const msTodayDays = Math.round((todayMs - msRangeStart.getTime()) / 86400000);
+  const msTodayOff = (msTodayDays >= 0 && msTodayDays <= msRangeDays) ? (msTodayDays / msRangeDays * 100) : -10;
 
   for (const [cust, opps] of Object.entries(tree).sort((a,b) => a[0].localeCompare(b[0]))) {
     const color = custColors[cust] || '#888';
@@ -789,6 +838,7 @@ const renderTimelines = () => {
 };
 
 custSelect.addEventListener('change', renderTimelines);
+oppStageSelect.addEventListener('change', renderTimelines);
 statusSelect.addEventListener('change', renderTimelines);
 fqSelect.addEventListener('change', renderTimelines);
 window.addEventListener('pipeline-date-range', renderTimelines);

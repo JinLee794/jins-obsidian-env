@@ -11,6 +11,17 @@
   max-width: 100% !important;
 }
 
+/* Ensure dataviewjs containers stretch to full width */
+.wide-page .block-language-dataviewjs {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible;
+}
+.wide-page .block-language-dataviewjs > div {
+  width: 100%;
+  max-width: 100%;
+}
+
 /* ── Stat Cards Row ── */
 .dashboard-cards {
   display: flex;

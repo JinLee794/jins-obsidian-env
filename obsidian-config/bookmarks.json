@@ -1,10 +1,58 @@
 {
   "items": [
     {
-      "type": "file",
-      "ctime": 1774914474520,
-      "path": "Customers/R1/R1.md",
-      "title": "R1"
+      "type": "group",
+      "ctime": 1775140511070,
+      "items": [
+        {
+          "type": "file",
+          "ctime": 1775140476414,
+          "path": "Dashboard/Day View.md",
+          "title": "Day View"
+        },
+        {
+          "type": "file",
+          "ctime": 1775140487231,
+          "path": "Dashboard/People Directory.md",
+          "title": "People Directory"
+        },
+        {
+          "type": "file",
+          "ctime": 1775140497873,
+          "path": "Dashboard/Customer Scorecard.md"
+        },
+        {
+          "type": "file",
+          "ctime": 1775140506307,
+          "path": "Dashboard/Command Center.md"
+        }
+      ],
+      "title": "Dashboards"
+    },
+    {
+      "type": "folder",
+      "ctime": 1775144073094,
+      "path": "Projects"
+    },
+    {
+      "type": "folder",
+      "ctime": 1775144091702,
+      "path": "Meetings"
+    },
+    {
+      "type": "folder",
+      "ctime": 1775144104833,
+      "path": "sidekick"
+    },
+    {
+      "type": "folder",
+      "ctime": 1775144108921,
+      "path": "Weekly"
+    },
+    {
+      "type": "folder",
+      "ctime": 1775144120375,
+      "path": "Daily"
     }
   ]
 }

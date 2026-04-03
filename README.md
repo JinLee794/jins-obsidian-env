@@ -146,6 +146,47 @@ To set it up:
 
 Once synced, the dashboards will automatically render your pipeline, customer, and people data.
 
+## Included Plugins
+
+34 community plugins are bundled in this config:
+
+| Plugin | Description | Author |
+|---|---|---|
+| **Actions URI** | Adds additional `x-callback-url` endpoints for common actions | Carlo Zottmann |
+| **Advanced Tables** | Improved table navigation, formatting, manipulation, and formulas | Tony Grosinger |
+| **Annotator** | Open and annotate PDF and EPUB files | Obsidian |
+| **BRAT** | Easily install a beta version of a plugin for testing | TfTHacker |
+| **Calendar** | Calendar view of your daily notes | Liam Cain |
+| **Charts View** | Data visualization based on Ant Design Charts | caronchen |
+| **Cron** | Simple CRON / scheduler to regularly run user scripts or Obsidian commands | Callum Loh |
+| **Custom Frames** | Turn web apps into panes using iframes with custom styling | Ellpeck |
+| **Dataview** | Complex data views for the data-obsessed | Michael Brenan |
+| **Docxer** | Import and preview Word (.docx) files, convert to markdown | Developer-Mike |
+| **ExcaliBrain** | A clean, intuitive and editable graph view | Zsolt Viczian |
+| **Excalidraw** | Sketch and edit Excalidraw drawings inside Obsidian | Zsolt Viczian |
+| **File Explorer Note Count** | Show note count under each folder in the file explorer | Ozan Tellioglu |
+| **Iconize** | Add icons to files, folders, and text | Florian Woelki |
+| **Image in Editor** | View images, transclusions, iframes, and PDFs in the editor | Ozan Tellioglu |
+| **Importer** | Import data from Notion, Evernote, Apple Notes, OneNote, Google Keep, Bear, Roam, and HTML | Obsidian |
+| **Kanban** | Create markdown-backed Kanban boards | mgmeyers |
+| **Linter** | Format and style notes — YAML, headings, spacing, markdown content, and more | Victor Tao |
+| **make.md** | Organize and personalize your notes | make.md |
+| **Markwhen** | Create timelines, Gantt charts, and calendars using Markwhen syntax | Markwhen |
+| **Mermaid Tools** | Visual toolbar for Mermaid.js diagram creation | dartungar |
+| **Meta Bind** | Inline input fields, metadata displays, and buttons for interactive notes | Moritz Jung |
+| **Natural Language Dates** | Create date-links from natural language | Argentina Ortega Sainz |
+| **Novel Word Count** | Word count (and more) for each file, folder, and vault in the file explorer | Isaac Lyman |
+| **Plugin Update Tracker** | Know when installed plugins have updates and evaluate upgrade risk | Obsidian |
+| **Recent Files** | List files by most recently opened | Tony Grosinger |
+| **Remember Cursor Position** | Remember cursor and scroll position for each note | Dmitry Savosh |
+| **Reminder** | Manage TODOs with reminders | uphy |
+| **Sidekick** | AI sidekick — agents, tools, skills, autocompletion, and smart workflows in your notes | Alex Vieira |
+| **Snippet Downloader** | Download and update CSS snippets from repositories | Mara-Li |
+| **Style Settings** | Adjust theme, plugin, and snippet CSS variables | mgmeyers |
+| **Tasks** | Track tasks across your vault with due dates, recurring tasks, and filtering | Clare Macrae & Ilyas Landikov |
+| **Templater** | Create and use templates | SilentVoid |
+| **Webpage HTML Export** | Export HTML from files, canvas pages, or whole vaults | Nathan George |
+
 ## Notes
 
 - Close Obsidian before importing to avoid conflicts.
